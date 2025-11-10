@@ -1,4 +1,8 @@
--- D1 Database Schema v2.1 for the SEO Services Website
+-- D1 Database Schema v2.2 for the SEO Services Website
+-- Changes:
+--   - posts: Renamed 'meta_desc' to 'meta_description' and added 'schema_markup'.
+--   - case_studies: Simplified table to match 'generate-content.mjs'.
+--   - testimonials: Simplified table to match 'generate-content.mjs'.
 
 DROP TABLE IF EXISTS testimonials;
 DROP TABLE IF EXISTS case_studies;
@@ -21,9 +25,8 @@ CREATE TABLE posts (
     title TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
     content TEXT,
-    excerpt TEXT,
-    meta_title TEXT,
-    meta_desc TEXT,
+    meta_description TEXT,
+    schema_markup TEXT,
     author_id INTEGER,
     status TEXT NOT NULL DEFAULT 'draft',
     published_at DATETIME,
@@ -36,24 +39,14 @@ CREATE TABLE posts (
 CREATE TABLE case_studies (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    slug TEXT NOT NULL UNIQUE,
-    client TEXT,
-    challenge TEXT,
-    solution TEXT,
-    results TEXT,
-    metrics TEXT,
-    published_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    content TEXT
 );
 
 -- Table: testimonials
 CREATE TABLE testimonials (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    company TEXT,
-    message TEXT NOT NULL,
-    rating INTEGER CHECK(rating >= 1 AND rating <= 5),
-    avatar_url TEXT,
-    is_featured BOOLEAN DEFAULT 0
+    customer_name TEXT NOT NULL,
+    content TEXT NOT NULL
 );
 
 -- Table: settings
@@ -64,5 +57,3 @@ CREATE TABLE settings (
 
 -- Indexes
 CREATE INDEX idx_posts_slug ON posts (slug);
-CREATE INDEX idx_case_studies_slug ON case_studies (slug);
-CREATE INDEX idx_testimonials_featured ON testimonials (is_featured);

@@ -39,8 +39,10 @@ export const handleLogin = async (request, env) => {
             return json({ error: 'Invalid credentials.' }, 401);
         }
 
-        if (user.password_hash !== 'placeholder_hash') {
-             return json({ error: 'Invalid credentials (password check).' }, 401);
+        const inputPasswordHash = await hashPassword(password);
+
+        if (user.password_hash !== inputPasswordHash) {
+            return json({ error: 'Invalid credentials.' }, 401);
         }
 
         const token = await jwt.sign({
