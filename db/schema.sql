@@ -1,6 +1,6 @@
--- D1 Database Schema v2 for the SEO Services Website
+-- D1 Database Schema v2.1 for the SEO Services Website
 
--- Drop tables if they exist to ensure a clean slate
+DROP TABLE IF EXISTS testimonials;
 DROP TABLE IF EXISTS case_studies;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS users;
@@ -23,7 +23,7 @@ CREATE TABLE posts (
     content TEXT,
     excerpt TEXT,
     meta_title TEXT,
-    meta_desc TEXT, -- Renamed from meta_description
+    meta_desc TEXT,
     author_id INTEGER,
     status TEXT NOT NULL DEFAULT 'draft',
     published_at DATETIME,
@@ -38,11 +38,22 @@ CREATE TABLE case_studies (
     title TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
     client TEXT,
-    challenge TEXT, -- More descriptive than 'result'
+    challenge TEXT,
     solution TEXT,
-    results TEXT, -- A summary of outcomes
-    metrics TEXT, -- JSON object for key metrics like "traffic_increase": "300%"
+    results TEXT,
+    metrics TEXT,
     published_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table: testimonials
+CREATE TABLE testimonials (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    company TEXT,
+    message TEXT NOT NULL,
+    rating INTEGER CHECK(rating >= 1 AND rating <= 5),
+    avatar_url TEXT,
+    is_featured BOOLEAN DEFAULT 0
 );
 
 -- Table: settings
@@ -51,6 +62,7 @@ CREATE TABLE settings (
     value TEXT
 );
 
--- Create indexes for performance
+-- Indexes
 CREATE INDEX idx_posts_slug ON posts (slug);
 CREATE INDEX idx_case_studies_slug ON case_studies (slug);
+CREATE INDEX idx_testimonials_featured ON testimonials (is_featured);

@@ -1,0 +1,24 @@
+<!-- src/templates/components/hero.html -->
+<section class="bg-gradient-to-r from-gray-900 to-gray-700 text-white text-center py-20 px-4">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in-down">
+        رتبه سایت خود را به اوج برسانید
+    </h1>
+    <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 animate-fade-in-up">
+        ما با استراتژی‌های سئوی داده-محور، کسب‌وکار شما را در صفحه اول نتایج جستجو قرار می‌دهیم.
+    </p>
+    <div class="space-x-4">
+        <a href="/contact" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105">
+            مشاوره رایگان
+        </a>
+        <a href="/services" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105">
+            خدمات ما
+        </a>
+    </div>
+</section>
+
+<style>
+    @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
+    .animate-fade-in-up { animation: fade-in-up 0.8s ease-out 0.3s forwards; }
+</style>
