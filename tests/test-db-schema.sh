@@ -10,11 +10,11 @@ if [ -z "$TABLES" ]; then
     exit 1
 fi
 
-# List of required tables
-REQUIRED_TABLES=("posts" "users" "settings")
+# List of required tables for v2
+REQUIRED_TABLES=("posts" "users" "settings" "case_studies")
 
 for table in "${REQUIRED_TABLES[@]}"; do
   echo "$TABLES" | grep -q "^$table$" || { echo "❌ Missing required table: $table"; exit 1; }
 done
 
-echo "✅ D1 schema OK (found all required tables)"
+echo "✅ D1 schema v2 OK (found all required tables)"

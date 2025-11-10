@@ -1,11 +1,25 @@
 // src/utils/response.mjs
 
-// Helper for HTML responses
+// Helper for standard HTML string responses
 export const html = (content, status = 200, headers = {}) => {
   return new Response(content, {
     status,
     headers: { ...headers, 'Content-Type': 'text/html;charset=UTF-8' },
   });
+};
+
+/**
+ * Helper for streaming HTML responses.
+ * @param {ReadableStream} stream - The stream to send as the response body.
+ * @param {number} [status=200] - The HTTP status code.
+ * @param {object} [headers={}] - Additional headers.
+ * @returns {Response}
+ */
+export const streamHtml = (stream, status = 200, headers = {}) => {
+    return new Response(stream, {
+      status,
+      headers: { ...headers, 'Content-Type': 'text/html;charset=UTF-8' },
+    });
 };
 
 // Helper for JSON responses
@@ -16,21 +30,7 @@ export const json = (data, status = 200, headers = {}) => {
   });
 };
 
-// Helper for XML responses
-export const xml = (content, status = 200, headers = {}) => {
-  return new Response(content, {
-    status,
-    headers: { ...headers, 'Content-Type': 'application/xml;charset=UTF-8' },
-  });
-};
-
-// Helper for Text responses
-export const text = (content, status = 200, headers = {}) => {
-    return new Response(content, {
-      status,
-      headers: { ...headers, 'Content-Type': 'text/plain;charset=UTF-8' },
-    });
-  };
+// ... other helpers (xml, text) ...
 
 // 404 Not Found handler
 export const handleNotFound = () => {

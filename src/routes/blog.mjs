@@ -1,6 +1,6 @@
 // src/routes/blog.mjs
-import { renderPage } from '../utils/renderer.mjs';
-import { html, handleNotFound } from '../utils/response.mjs';
+import { streamRenderedPage } from '../utils/renderer.mjs';
+import { streamHtml, handleNotFound } from '../utils/response.mjs';
 import blogTemplate from '../templates/blog.html';
 import postTemplate from '../templates/post.html';
 import { generateSeoMeta } from '../utils/seo.mjs';
@@ -14,15 +14,15 @@ export async function handleBlog(request, env) {
   const seoData = generateSeoMeta({
     title: 'وبلاگ تخصصی سئو | مقالات و آموزش‌های جدید',
     description: 'آخرین مقالات، ترفندها و آموزش‌های سئو را در وبلاگ ما مطالعه کنید.',
-    canonical: 'https://your-domain.com/blog',
+    canonical: `${env.BASE_URL}/blog`,
   });
 
-  const renderedHtml = renderPage(blogTemplate, {
+  const stream = streamRenderedPage(blogTemplate, {
     seo: seoData,
     contentData: { posts: posts || [] },
   });
 
-  return html(renderedHtml);
+  return streamHtml(stream);
 }
 
 // Handler for a single blog post
@@ -37,14 +37,14 @@ export async function handleBlogPost(request, env) {
 
   const seoData = generateSeoMeta({
     title: post.meta_title || post.title,
-    description: post.meta_description || post.excerpt,
-    canonical: `${env.BASE_URL || 'https://your-domain.com'}/blog/${post.slug}`,
+    description: post.meta_desc || post.excerpt,
+    canonical: `${env.BASE_URL}/blog/${post.slug}`,
   });
 
-  const renderedHtml = renderPage(postTemplate, {
+  const stream = streamRenderedPage(postTemplate, {
     seo: seoData,
     contentData: { post },
   });
 
-  return html(renderedHtml);
+  return streamHtml(stream);
 }
