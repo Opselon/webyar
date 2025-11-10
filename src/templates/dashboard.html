@@ -25,6 +25,7 @@
                     <input type="text" id="post-slug" placeholder="اسلاگ (slug)" class="w-full px-3 py-2 mb-3 text-gray-700 border rounded-lg focus:outline-none">
                     <textarea id="post-excerpt" placeholder="خلاصه پست" rows="3" class="w-full px-3 py-2 mb-3 text-gray-700 border rounded-lg focus:outline-none"></textarea>
                     <textarea id="post-content" placeholder="محتوای کامل پست" rows="10" class="w-full px-3 py-2 mb-3 text-gray-700 border rounded-lg focus:outline-none"></textarea>
+                    <input type="text" id="post-status" placeholder="وضعیت (draft/published)" class="w-full px-3 py-2 mb-3 text-gray-700 border rounded-lg focus:outline-none">
                 </form>
             </div>
             <div class="items-center px-4 py-3">
@@ -41,7 +42,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const apiToken = 'my-secret-token'; // This should be handled more securely in a real app
         const postList = document.getElementById('post-list');
         const modal = document.getElementById('post-modal');
         const addPostBtn = document.getElementById('add-post-btn');
@@ -58,7 +58,7 @@
                 <div class="flex justify-between items-center border p-4 rounded-lg">
                     <div>
                         <h2 class="text-xl font-semibold">${post.title}</h2>
-                        <p class="text-sm text-gray-500">/${post.slug}</p>
+                        <p class="text-sm text-gray-500">/${post.slug} - <span class="font-mono">[${post.status}]</span></p>
                     </div>
                     <div>
                         <button class="edit-btn text-yellow-500 hover:text-yellow-600 mr-2" data-id="${post.id}">ویرایش</button>
@@ -68,11 +68,9 @@
             `).join('');
         }
 
-        // Show/hide modal
         const showModal = () => modal.classList.remove('hidden');
         const hideModal = () => modal.classList.add('hidden');
 
-        // Open modal for new post
         addPostBtn.addEventListener('click', () => {
             postForm.reset();
             postIdInput.value = '';
@@ -80,7 +78,6 @@
             showModal();
         });
 
-        // Open modal for editing a post
         postList.addEventListener('click', async (e) => {
             if (e.target.classList.contains('edit-btn')) {
                 const id = e.target.dataset.id;
@@ -92,26 +89,22 @@
                 document.getElementById('post-slug').value = post.slug;
                 document.getElementById('post-excerpt').value = post.excerpt;
                 document.getElementById('post-content').value = post.content;
+                document.getElementById('post-status').value = post.status;
                 document.getElementById('modal-title').innerText = 'ویرایش پست';
                 showModal();
             }
         });
 
-        // Delete a post
         postList.addEventListener('click', async (e) => {
             if (e.target.classList.contains('delete-btn')) {
                 const id = e.target.dataset.id;
                 if (confirm('آیا از حذف این پست مطمئن هستید؟')) {
-                    await fetch(`/api/posts/${id}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${apiToken}` }
-                    });
+                    await fetch(`/api/posts/${id}`, { method: 'DELETE' });
                     loadPosts();
                 }
             }
         });
 
-        // Save (create or update) a post
         savePostBtn.addEventListener('click', async () => {
             const id = postIdInput.value;
             const postData = {
@@ -119,7 +112,7 @@
                 slug: document.getElementById('post-slug').value,
                 excerpt: document.getElementById('post-excerpt').value,
                 content: document.getElementById('post-content').value,
-                date: new Date().toISOString().split('T')[0]
+                status: document.getElementById('post-status').value,
             };
 
             const url = id ? `/api/posts/${id}` : '/api/posts';
@@ -127,10 +120,7 @@
 
             await fetch(url, {
                 method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiToken}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postData)
             });
 
@@ -140,7 +130,6 @@
 
         cancelBtn.addEventListener('click', hideModal);
 
-        // Initial load
         loadPosts();
     });
 </script>

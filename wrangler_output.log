@@ -1,3 +1,12 @@
 
-> cloudflare-seo-site@1.0.0 start
-> wrangler dev
+ ⛅️ wrangler 3.114.15 (update available 4.46.0)
+-----------------------------------------------
+
+Your Worker and resources are simulated locally via Miniflare. For more information, see: https://developers.cloudflare.com/workers/testing/local-development.
+
+Your worker has access to the following bindings:
+- D1 Databases:
+  - DB: seo_db (your-preview-d1-database-id-here), Preview: (your-preview-d1-database-id-here) [simulated locally]
+- Vars:
+  - BASE_URL: "https://your-domain.com"
+  - ADMIN_USER: "admin"
