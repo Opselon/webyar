@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO Meta Tags - Will be replaced dynamically -->
+    <!-- SEO Meta Tags -->
     <title>{{- it.seo.title }}</title>
     <meta name="description" content="{{- it.seo.description }}">
     <link rel="canonical" href="{{- it.seo.canonical }}">
@@ -26,9 +26,52 @@
     <!-- TailwindCSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Add any other head elements here -->
+    <!-- Custom Styles for Typography and Fonts -->
+    <style>
+        /* Use system fonts for instant loading and native feel */
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Enhanced readability for blog posts and content-heavy pages */
+        .prose {
+            font-size: 18px;
+            line-height: 1.8;
+            max-width: 65ch; /* Optimal line length for reading */
+        }
+
+        /* Ensure high contrast for accessibility */
+        .prose {
+            color: #333;
+        }
+
+        .prose a {
+            color: #007bff;
+        }
+
+        /* Dark mode support (basic) */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a202c;
+                color: #e2e8f0;
+            }
+            .prose {
+                color: #e2e8f0;
+            }
+            .prose a {
+                color: #63b3ed;
+            }
+            header, .bg-white {
+                background-color: #2d3748;
+                border-color: #4a5568;
+            }
+            footer.bg-gray-800 {
+                 background-color: #1a202c;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans">
+<body class="bg-gray-100 text-gray-800">
 
     <header class="bg-white shadow-md">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">

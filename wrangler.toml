@@ -3,13 +3,20 @@ main = "src/index.mjs"
 compatibility_date = "2023-11-10"
 
 # Bind a D1 Database.
-# 1. Create a database with: wrangler d1 create seo_db
-# 2. Get the 'database_id' from the output and paste it below.
 [[d1_databases]]
-binding = "DB" # This is how we access the DB in the worker (env.DB)
+binding = "DB"
 database_name = "seo_db"
 database_id = "your-d1-database-id-here"
-preview_database_id = "your-preview-d1-database-id-here" # For local dev with `wrangler dev`
+preview_database_id = "your-preview-d1-database-id-here"
+
+# Bind a KV Namespace for caching.
+# 1. Create with: wrangler kv:namespace create CACHE_KV
+# 2. Add the id and preview_id below.
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "your-cache-kv-namespace-id-here"
+preview_id = "your-preview-cache-kv-namespace-id-here"
+
 
 [vars]
 BASE_URL = "https://your-domain.com"
