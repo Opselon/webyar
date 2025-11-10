@@ -1,0 +1,119 @@
+<!-- src/templates/dashboard/analytics.html -->
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">تحلیل‌گر سئو صفحه</h1>
+
+    <!-- URL Input Form -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <form id="seo-analyzer-form" class="flex items-center space-x-4">
+            <input type="url" id="page-url" placeholder="https://example.com/page" class="flex-grow px-4 py-2 border rounded-lg" required>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">تحلیل کن</button>
+        </form>
+    </div>
+
+    <!-- Results Area -->
+    <div id="results-container" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- SEO Score Chart -->
+            <div class="md:col-span-1 bg-white p-6 rounded-lg shadow-md text-center">
+                <h2 class="text-lg font-semibold mb-4">امتیاز سئو</h2>
+                <canvas id="seo-score-chart" width="200" height="200"></canvas>
+            </div>
+
+            <!-- Recommendations List -->
+            <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-lg font-semibold mb-4">پیشنهادها برای بهبود</h2>
+                <ul id="recommendations-list" class="space-y-3 list-disc list-inside text-gray-700">
+                    <!-- Recommendations will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="loading-indicator" class="hidden text-center p-6">
+        <p>در حال تحلیل صفحه...</p>
+    </div>
+    <div id="error-message" class="hidden text-center p-6 bg-red-100 text-red-700 rounded-lg"></div>
+</div>
+
+<!-- Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('seo-analyzer-form');
+        const urlInput = document.getElementById('page-url');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const recommendationsList = document.getElementById('recommendations-list');
+        const chartCanvas = document.getElementById('seo-score-chart');
+        let seoChart = null;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const urlToAnalyze = urlInput.value;
+
+            resultsContainer.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            loadingIndicator.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`/api/dashboard/analytics/seo?url=${encodeURIComponent(urlToAnalyze)}`);
+                if (!response.ok) {
+                    throw new Error('خطا در ارتباط با سرور.');
+                }
+                const data = await response.json();
+
+                displayResults(data);
+
+            } catch (err) {
+                errorMessage.textContent = err.message;
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        function displayResults(data) {
+            // Display recommendations
+            recommendationsList.innerHTML = data.recommendations.map(rec =>
+                `<li class="text-sm"><span class="font-semibold">${rec.name}:</span> ${rec.message}</li>`
+            ).join('');
+
+            // Update or create the chart
+            if (seoChart) {
+                seoChart.destroy();
+            }
+            seoChart = new Chart(chartCanvas, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [data.score, 100 - data.score],
+                        backgroundColor: ['#10B981', '#EF4444'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+
+            // Add score text in the middle of the doughnut
+            const scoreText = document.createElement('div');
+            scoreText.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-bold';
+            scoreText.textContent = `${data.score}`;
+            chartCanvas.parentElement.style.position = 'relative';
+            // Clear previous score if exists
+            const existingScore = chartCanvas.parentElement.querySelector('div');
+            if(existingScore) existingScore.remove();
+            chartCanvas.parentElement.appendChild(scoreText);
+
+
+            resultsContainer.classList.remove('hidden');
+        }
+    });
+</script>
