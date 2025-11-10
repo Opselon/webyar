@@ -4,22 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Resource Hints for Performance -->
-    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
-
-    <!-- SEO Meta Tags -->
+    <!-- ... resource hints and meta tags ... -->
     <title>{{- it.seo.title }}</title>
-    <!-- ... other meta tags ... -->
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure TailwindCSS for dark mode
+        tailwind.config = {
+            darkMode: 'class', // Enable class-based dark mode
+        }
+    </script>
 
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-        /* ... other styles ... */
+        /* Define CSS variables for theming */
+        :root {
+            --color-bg-light: #f9fafb;
+            --color-text-light: #1f2937;
+            --color-primary: 99 102 241; /* Indigo */
+
+            --color-bg-dark: #111827;
+            --color-text-dark: #d1d5db;
+        }
+
+        /* Light theme by default */
+        body {
+            background-color: var(--color-bg-light);
+            color: var(--color-text-light);
+        }
+
+        /* Dark theme styles */
+        .dark body {
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-dark);
+        }
+        .dark .bg-white { background-color: #1f2937; }
+        .dark .bg-gray-50 { background-color: #111827; }
+        .dark .text-gray-600 { color: #9ca3af; }
+        /* Add other dark mode overrides as needed */
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="transition-colors duration-300">
+    <script>
+        // This script must run before the body content to prevent FOUC
+        (function() {
+            function getTheme() {
+                if (window.localStorage.getItem('theme')) {
+                    return window.localStorage.getItem('theme');
+                }
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            if (getTheme() === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-indigo-600">سئوکار V2</a>
+            <!-- ... navigation ... -->
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+                <!-- Sun/Moon Icon Placeholder -->
+                <svg id="theme-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="..."></path></svg>
+            </button>
+        </nav>
+    </header>
+
     <!-- ... rest of the layout ... -->
+
+    <script>
+        // Logic for the theme toggle button
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const docElement = document.documentElement;
+
+        // Function to update icon based on theme
+        function updateIcon() {
+            if (docElement.classList.contains('dark')) {
+                themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 4.04l-.707-.707M5.76 5.76l-.707-.707"/>`; // Sun
+            } else {
+                themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>`; // Moon
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            docElement.classList.toggle('dark');
+            const theme = docElement.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            updateIcon();
+        });
+
+        // Set initial icon
+        updateIcon();
+    </script>
 </body>
 </html>

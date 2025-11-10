@@ -1,0 +1,14 @@
+<!-- src/templates/components/testimonials.html -->
+<section class="py-16 bg-indigo-700 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-8">مشتریان ما چه می‌گویند؟</h2>
+        <div class="max-w-3xl mx-auto">
+            {{ it.testimonials.forEach(testimonial => { }}
+                <div class="p-8 rounded-lg">
+                    <p class="text-xl italic">"{{- testimonial.message }}"</p>
+                    <p class="mt-4 font-bold">- {{- testimonial.name }}, {{- testimonial.company }}</p>
+                </div>
+            {{ }); }}
+        </div>
+    </div>
+</section>
