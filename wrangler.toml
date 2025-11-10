@@ -1,0 +1,25 @@
+name = "cloudflare-seo-site"
+main = "src/index.mjs"
+compatibility_date = "2023-11-10"
+
+# Bind a KV Namespace.
+# 1. Create a namespace with: wrangler kv:namespace create POSTS
+# 2. Get the 'id' from the output and paste it below.
+# 3. For local dev, you also need a preview_id. Run 'wrangler kv:namespace create POSTS --preview' and use that id.
+[[kv_namespaces]]
+binding = "POSTS"
+id = "your-production-kv-namespace-id-here"
+preview_id = "your-preview-kv-namespace-id-here"
+
+
+[vars]
+BASE_URL = "https://your-domain.com"
+ADMIN_USER = "admin"
+# For production, use secrets to set your password:
+# wrangler secret put ADMIN_PASS
+# Then you can remove the plain text password from here.
+
+[dev]
+# For local development, wrangler uses the [vars] block if not overridden.
+# You can define a local password like this.
+vars = { ADMIN_PASS = "password" }
