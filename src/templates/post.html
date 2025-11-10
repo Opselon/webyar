@@ -1,8 +1,10 @@
 <!-- src/templates/post.html -->
-<article class="bg-white p-8 rounded-lg shadow-md">
+<article class="bg-white p-8 rounded-lg shadow-md mx-auto max-w-4xl">
     <h1 class="text-4xl font-bold mb-2">{{- it.post.title }}</h1>
-    <p class="text-gray-500 mb-6">منتشر شده در تاریخ: {{- it.post.date }}</p>
-    <div class="prose lg:prose-xl">
-        {{- it.post.content }}
+    <p class="text-gray-500 mb-6">منتشر شده در تاریخ: {{- it.post.published_at }}</p>
+
+    <!-- This div will now have the enhanced readability styles -->
+    <div class="prose">
+        {{! it.post.content }}
     </div>
 </article>
