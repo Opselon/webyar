@@ -1,0 +1,80 @@
+<!-- src/templates/dashboard/settings.html -->
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">تنظیمات عمومی سایت</h1>
+
+    <div class="bg-white p-6 rounded-lg shadow-md max-w-2xl">
+        <form id="settings-form" class="space-y-6">
+            <div>
+                <label for="site_title" class="block text-sm font-medium text-gray-700">عنوان سایت</label>
+                <input type="text" id="site_title" name="site_title" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                <p class="mt-2 text-sm text-gray-500">این عنوان در تگ `<title>` صفحات شما استفاده خواهد شد.</p>
+            </div>
+
+            <div>
+                <label for="site_description" class="block text-sm font-medium text-gray-700">توضیحات سایت (Meta Description)</label>
+                <textarea id="site_description" name="site_description" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea>
+                <p class="mt-2 text-sm text-gray-500">توضیحات پیش‌فرض سایت برای موتورهای جستجو.</p>
+            </div>
+
+            <div class="flex justify-end pt-4">
+                <button type="submit" id="save-settings-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    ذخیره تغییرات
+                </button>
+            </div>
+            <p id="success-message" class="text-green-600 text-sm mt-2"></p>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('settings-form');
+        const saveBtn = document.getElementById('save-settings-btn');
+        const successMessage = document.getElementById('success-message');
+
+        async function apiFetch(url, options = {}) {
+            // (Reusing the same secure fetch function from posts.html)
+            const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
+            if (response.status === 401) {
+                window.location.href = '/dashboard';
+                return null;
+            }
+            return response;
+        }
+
+        async function loadSettings() {
+            const response = await apiFetch('/api/dashboard/settings');
+            if (!response) return;
+            const settings = await response.json();
+            document.getElementById('site_title').value = settings.site_title || '';
+            document.getElementById('site_description').value = settings.site_description || '';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'در حال ذخیره...';
+            successMessage.textContent = '';
+
+            const formData = new FormData(form);
+            const settingsData = Object.fromEntries(formData.entries());
+
+            const response = await apiFetch('/api/dashboard/settings', {
+                method: 'PUT',
+                body: JSON.stringify(settingsData),
+            });
+
+            if (response && response.ok) {
+                successMessage.textContent = 'تنظیمات با موفقیت ذخیره شد!';
+                setTimeout(() => successMessage.textContent = '', 3000);
+            } else {
+                 alert('خطا در ذخیره تنظیمات.');
+            }
+
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'ذخیره تغییرات';
+        });
+
+        loadSettings();
+    });
+</script>

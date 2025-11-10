@@ -1,10 +1,8 @@
 {
-  "name": "cloudflare-seo-site",
-  "version": "1.0.0",
-  "description": "A modern, modular, SEO-friendly website for SEO services running on Cloudflare Workers.",
+  "name": "cloudflare-seo-site-v2",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "main": "src/index.mjs",
   "scripts": {
     "start": "wrangler dev",
     "deploy": "wrangler publish"
@@ -13,8 +11,9 @@
     "wrangler": "^3.0.0"
   },
   "dependencies": {
+    "@tsndr/cloudflare-worker-jwt": "^2.2.1",
+    "eta": "^2.0.0",
     "itty-router": "^4.0.23",
-    "toucan-js": "^2.6.0",
-    "eta": "^2.0.0"
+    "toucan-js": "^2.6.0"
   }
 }

@@ -1,0 +1,176 @@
+<!-- src/templates/dashboard/posts.html -->
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">مدیریت پست‌ها</h1>
+        <button id="add-post-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">
+            افزودن پست جدید
+        </button>
+    </div>
+
+    <!-- Post List -->
+    <div id="post-list" class="bg-white p-6 rounded-lg shadow-md">
+        <!-- Posts will be loaded here dynamically -->
+        <p>در حال بارگذاری پست‌ها...</p>
+    </div>
+</div>
+
+<!-- Modal for Add/Edit Post -->
+<div id="post-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-md bg-white">
+        <h3 class="text-lg font-medium text-gray-900 mb-4" id="modal-title">افزودن/ویرایش پست</h3>
+        <form id="post-form" class="space-y-4">
+            <input type="hidden" id="post-id">
+            <div>
+                <label for="post-title" class="block text-sm font-medium text-gray-700">عنوان</label>
+                <input type="text" id="post-title" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label for="post-slug" class="block text-sm font-medium text-gray-700">اسلاگ (Slug)</label>
+                <input type="text" id="post-slug" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div>
+                <label for="post-excerpt" class="block text-sm font-medium text-gray-700">خلاصه</label>
+                <textarea id="post-excerpt" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea>
+            </div>
+            <div>
+                <label for="post-content" class="block text-sm font-medium text-gray-700">محتوا (HTML)</label>
+                <textarea id="post-content" rows="10" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea>
+            </div>
+             <div>
+                <label for="post-status" class="block text-sm font-medium text-gray-700">وضعیت</label>
+                <select id="post-status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="draft">پیش‌نویس (Draft)</option>
+                    <option value="published">منتشر شده (Published)</option>
+                </select>
+            </div>
+            <div class="flex justify-end space-x-2 pt-4">
+                <button type="button" id="cancel-btn" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">انصراف</button>
+                <button type="submit" id="save-post-btn" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">ذخیره</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // This script will be executed in the context of the dashboard layout
+    document.addEventListener('DOMContentLoaded', () => {
+        const postList = document.getElementById('post-list');
+        const modal = document.getElementById('post-modal');
+        const addPostBtn = document.getElementById('add-post-btn');
+        const postForm = document.getElementById('post-form');
+        const postIdInput = document.getElementById('post-id');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        async function apiFetch(url, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const response = await fetch(url, { ...defaultOptions, ...options });
+            if (response.status === 401) {
+                // If unauthorized, redirect to login
+                window.location.href = '/dashboard';
+                return null;
+            }
+            return response;
+        }
+
+        async function loadPosts() {
+            const response = await apiFetch('/api/dashboard/posts');
+            if (!response) return;
+            const posts = await response.json();
+
+            if (posts.length === 0) {
+                 postList.innerHTML = '<p>هیچ پستی یافت نشد. برای شروع یکی اضافه کنید.</p>';
+                 return;
+            }
+
+            postList.innerHTML = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">عنوان</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">اسلاگ</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">وضعیت</th>
+                            <th class="px-6 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${posts.map(post => `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${post.title}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">/${post.slug}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${post.status}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="edit-btn text-indigo-600 hover:text-indigo-900" data-id="${post.id}">ویرایش</button>
+                                    <button class="delete-btn text-red-600 hover:text-red-900 ml-4" data-id="${post.id}">حذف</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        const showModal = () => modal.classList.remove('hidden');
+        const hideModal = () => modal.classList.add('hidden');
+
+        addPostBtn.addEventListener('click', () => {
+            postForm.reset();
+            postIdInput.value = '';
+            document.getElementById('modal-title').innerText = 'افزودن پست جدید';
+            showModal();
+        });
+
+        cancelBtn.addEventListener('click', hideModal);
+
+        postList.addEventListener('click', async (e) => {
+            const target = e.target;
+            const id = target.dataset.id;
+
+            if (target.classList.contains('edit-btn')) {
+                const response = await apiFetch(`/api/dashboard/posts/${id}`);
+                if (!response) return;
+                const post = await response.json();
+
+                postIdInput.value = post.id;
+                document.getElementById('post-title').value = post.title;
+                document.getElementById('post-slug').value = post.slug;
+                document.getElementById('post-excerpt').value = post.excerpt;
+                document.getElementById('post-content').value = post.content;
+                document.getElementById('post-status').value = post.status;
+                document.getElementById('modal-title').innerText = 'ویرایش پست';
+                showModal();
+            }
+
+            if (target.classList.contains('delete-btn')) {
+                if (confirm('آیا از حذف این پست مطمئن هستید؟')) {
+                    await apiFetch(`/api/dashboard/posts/${id}`, { method: 'DELETE' });
+                    loadPosts();
+                }
+            }
+        });
+
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = postIdInput.value;
+            const postData = {
+                title: document.getElementById('post-title').value,
+                slug: document.getElementById('post-slug').value,
+                excerpt: document.getElementById('post-excerpt').value,
+                content: document.getElementById('post-content').value,
+                status: document.getElementById('post-status').value,
+            };
+
+            const url = id ? `/api/dashboard/posts/${id}` : '/api/dashboard/posts';
+            const method = id ? 'PUT' : 'POST';
+
+            await apiFetch(url, { method, body: JSON.stringify(postData) });
+            hideModal();
+            loadPosts();
+        });
+
+        loadPosts();
+    });
+</script>
