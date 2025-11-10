@@ -1,0 +1,20 @@
+{
+  "name": "cloudflare-seo-site",
+  "version": "1.0.0",
+  "description": "A modern, modular, SEO-friendly website for SEO services running on Cloudflare Workers.",
+  "private": true,
+  "type": "module",
+  "main": "src/index.mjs",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.23",
+    "toucan-js": "^2.6.0",
+    "eta": "^2.0.0"
+  }
+}

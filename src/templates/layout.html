@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags - Will be replaced dynamically -->
+    <title>{{- it.seo.title }}</title>
+    <meta name="description" content="{{- it.seo.description }}">
+    <link rel="canonical" href="{{- it.seo.canonical }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{- it.seo.canonical }}">
+    <meta property="og:title" content="{{- it.seo.title }}">
+    <meta property="og:description" content="{{- it.seo.description }}">
+    <meta property="og:image" content="{{- it.seo.image || 'https://your-domain.com/default-og-image.jpg' }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{- it.seo.canonical }}">
+    <meta property="twitter:title" content="{{- it.seo.title }}">
+    <meta property="twitter:description" content="{{- it.seo.description }}">
+    <meta property="twitter:image" content="{{- it.seo.image || 'https://your-domain.com/default-og-image.jpg' }}">
+
+    <!-- TailwindCSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Add any other head elements here -->
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-blue-600">سئوکار حرفه‌ای</a>
+            <ul class="flex space-x-4">
+                <li><a href="/" class="text-gray-600 hover:text-blue-500">خانه</a></li>
+                <li><a href="/services" class="text-gray-600 hover:text-blue-500">خدمات</a></li>
+                <li><a href="/pricing" class="text-gray-600 hover:text-blue-500">قیمت‌ها</a></li>
+                <li><a href="/blog" class="text-gray-600 hover:text-blue-500">وبلاگ</a></li>
+                <li><a href="/contact" class="text-gray-600 hover:text-blue-500">تماس با ما</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        {{- it.content }}
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-8 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2023 سئوکار حرفه‌ای. تمام حقوق محفوظ است.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
