@@ -1,91 +1,93 @@
 // src/utils/seo-audit.mjs
 
 /**
- * A simple, lightweight SEO audit engine that runs on Cloudflare Workers.
- * It analyzes an HTML string using regex to avoid heavy parsing libraries.
+ * AI-Enhanced SEO Audit Engine (Rule-Based).
+ * Analyzes HTML content and performance metrics.
  *
  * @param {string} htmlContent - The full HTML content of a page.
- * @returns {object} An object containing the SEO score and recommendations.
+ * @param {object} [perfMetrics={}] - Optional performance metrics.
+ * @param {number} [perfMetrics.ttfb] - Time to First Byte in seconds.
+ * @param {number} [perfMetrics.lcp] - Largest Contentful Paint in seconds.
+ * @returns {object} An object with score, recommendations, and analysis.
  */
-export function analyzeSeo(htmlContent) {
+export function analyzeSeo(htmlContent, perfMetrics = {}) {
     const recommendations = [];
     let score = 100;
+    const MAX_POINTS_PER_CATEGORY = {
+        title: 20,
+        description: 20,
+        headings: 15,
+        performance: 25,
+        structuredData: 10,
+        mobile: 10,
+    };
 
-    // --- Helper function to run a check ---
-    const check = (description, testFn) => {
-        if (!testFn()) {
-            recommendations.push(description);
-            score -= description.points; // Subtract points for each failure
+    // --- Helper function to run a check and deduct points ---
+    const check = (value, points, category) => {
+        if (!value) {
+            score -= points;
+            MAX_POINTS_PER_CATEGORY[category] -= points; // Track points lost per category
+            return false;
         }
+        return true;
     };
 
     // --- SEO Checks ---
 
-    // 1. Title Tag
-    check({
-        name: 'Title Tag Presence',
-        message: 'صفحه فاقد تگ <title> است که برای سئو حیاتی است.',
-        points: 15
-    }, () => /<title>.*<\/title>/i.test(htmlContent));
-
+    // 1. Title
     const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/i);
     const title = titleMatch ? titleMatch[1] : '';
-
-    check({
-        name: 'Title Tag Length',
-        message: `طول عنوان صفحه (${title.length} کاراکتر) خارج از محدوده بهینه (30-60) است.`,
-        points: 5
-    }, () => title.length >= 30 && title.length <= 60);
+    if (check(title, 20, 'title')) {
+        if (!check(title.length >= 30 && title.length <= 60, 10, 'title')) {
+            recommendations.push("طول عنوان صفحه خارج از محدوده بهینه (30-60) است.");
+        }
+    } else {
+        recommendations.push("صفحه فاقد تگ <title> است.");
+    }
 
     // 2. Meta Description
     const metaDescMatch = htmlContent.match(/<meta\s+name=["']description["']\s+content=["'](.*?)["']/i);
     const metaDescription = metaDescMatch ? metaDescMatch[1] : '';
+    if (check(metaDescription, 20, 'description')) {
+        if (!check(metaDescription.length >= 70 && metaDescription.length <= 160, 10, 'description')) {
+            recommendations.push("طول متا توضیحات خارج از محدوده بهینه (70-160) است.");
+        }
+    } else {
+        recommendations.push("صفحه فاقد متا تگ توضیحات است.");
+    }
 
-    check({
-        name: 'Meta Description Presence',
-        message: 'صفحه فاقد متا تگ توضیحات (meta description) است.',
-        points: 10
-    }, () => !!metaDescription);
+    // 3. Headings
+    const h1Count = (htmlContent.match(/<h1.*?>/gi) || []).length;
+    if (!check(h1Count === 1, 15, 'headings')) {
+        recommendations.push(`صفحه باید دقیقاً یک تگ <h1> داشته باشد (تعداد فعلی: ${h1Count}).`);
+    }
 
-    check({
-        name: 'Meta Description Length',
-        message: `طول متا توضیحات (${metaDescription.length} کاراکتر) خارج از محدوده بهینه (70-160) است.`,
-        points: 5
-    }, () => metaDescription.length >= 70 && metaDescription.length <= 160);
+    // 4. Performance (from external metrics)
+    const { ttfb, lcp } = perfMetrics;
+    if (ttfb !== undefined) {
+        if (!check(ttfb <= 0.8, 15, 'performance')) {
+            recommendations.push(`TTFB برابر با ${ttfb}s است که بالاتر از حد مطلوب (0.8s) می‌باشد.`);
+        }
+    }
+     if (lcp !== undefined) {
+        if (!check(lcp <= 2.5, 10, 'performance')) {
+            recommendations.push(`LCP برابر با ${lcp}s است که بالاتر از حد مطلوب (2.5s) می‌باشد.`);
+        }
+    }
 
-    // 3. H1 Heading
-    check({
-        name: 'H1 Heading Presence',
-        message: 'هر صفحه باید دقیقاً یک تگ <h1> داشته باشد.',
-        points: 10
-    }, () => {
-        const h1Matches = htmlContent.match(/<h1.*?>/gi);
-        return h1Matches && h1Matches.length === 1;
-    });
+    // 5. Structured Data (Simple Check)
+    if (!check(/<script\s+type=["']application\/ld\+json["']>/i.test(htmlContent), 10, 'structuredData')) {
+        recommendations.push("صفحه فاقد داده‌های ساختاریافته (JSON-LD) است.");
+    }
 
-    // 4. Canonical Link
-    check({
-        name: 'Canonical Link Presence',
-        message: 'توصیه می‌شود از تگ <link rel="canonical"> برای جلوگیری از محتوای تکراری استفاده شود.',
-        points: 5
-    }, () => /<link\s+rel=["']canonical["']/.test(htmlContent));
-
-    // 5. Image Alt Tags (a simple check for missing alt attributes)
-    const imgWithoutAlt = htmlContent.match(/<img(?!.*\balt=)/gi);
-    check({
-        name: 'Image Alt Attributes',
-        message: `تعداد ${imgWithoutAlt ? imgWithoutAlt.length : 0} تصویر بدون ویژگی alt یافت شد. alt برای دسترسی‌پذیری و سئوی تصاویر مهم است.`,
-        points: 5
-    }, () => !imgWithoutAlt);
+    // 6. Mobile Readability (Simple Heuristic)
+    if (!check(/<meta\s+name=["']viewport["']/.test(htmlContent), 10, 'mobile')) {
+        recommendations.push("تگ viewport برای نمایش صحیح در موبایل یافت نشد.");
+    }
 
 
     return {
-        score: Math.max(0, score), // Score cannot be negative
+        score: Math.max(0, score),
         recommendations,
-        analysis: {
-            title,
-            metaDescription,
-            h1Count: (htmlContent.match(/<h1.*?>/gi) || []).length,
-        }
     };
 }

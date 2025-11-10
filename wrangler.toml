@@ -2,6 +2,11 @@ name = "cloudflare-seo-site-v2"
 main = "src/index.mjs"
 compatibility_date = "2023-11-10"
 
+# Build configuration for minification and optimization
+[build]
+command = "npm run build" # Placeholder for potential future build steps
+# Wrangler's bundler (esbuild) handles tree-shaking and minification by default on deploy.
+
 [[d1_databases]]
 binding = "DB"
 database_name = "seo_db"
@@ -18,6 +23,5 @@ BASE_URL = "https://your-domain.com"
 ADMIN_USER = "admin"
 
 [dev]
-# These vars are used by `wrangler dev`
 ADMIN_PASS = "password"
 JWT_SECRET = "a-secure-secret-for-local-development"

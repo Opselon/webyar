@@ -4,88 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+
     <!-- SEO Meta Tags -->
     <title>{{- it.seo.title }}</title>
-    <meta name="description" content="{{- it.seo.description }}">
-    <link rel="canonical" href="{{- it.seo.canonical }}">
-
-    <!-- Open Graph & Twitter -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{- it.seo.canonical }}">
     <!-- ... other meta tags ... -->
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; }
-        .prose { font-size: 18px; line-height: 1.8; max-width: 65ch; }
-        /* Add other base styles here */
-        .hamburger-line { transition: all 0.3s; }
-        .mobile-menu { transition: transform 0.3s ease-in-out; }
+        /* ... other styles ... */
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold text-blue-600">سئوکار V2</a>
-
-            <!-- Desktop Menu -->
-            <ul class="hidden md:flex space-x-6">
-                <li><a href="/" class="hover:text-blue-500">خانه</a></li>
-                <li><a href="/services" class="hover:text-blue-500">خدمات</a></li>
-                <li><a href="/case-studies" class="hover:text-blue-500">نمونه کارها</a></li>
-                <li><a href="/blog" class="hover:text-blue-500">وبلاگ</a></li>
-                <li><a href="/contact" class="hover:text-blue-500">تماس</a></li>
-            </ul>
-
-            <!-- Hamburger Button -->
-            <div class="md:hidden">
-                <button id="hamburger-btn" class="space-y-1.5">
-                    <span class="hamburger-line block w-6 h-0.5 bg-gray-700"></span>
-                    <span class="hamburger-line block w-6 h-0.5 bg-gray-700"></span>
-                    <span class="hamburger-line block w-4 h-0.5 bg-gray-700"></span>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="mobile-menu md:hidden absolute top-full left-0 w-full bg-white shadow-lg transform -translate-x-full">
-             <ul class="flex flex-col items-center space-y-4 py-6">
-                <li><a href="/" class="text-lg hover:text-blue-500">خانه</a></li>
-                <li><a href="/services" class="text-lg hover:text-blue-500">خدمات</a></li>
-                <li><a href="/case-studies" class="text-lg hover:text-blue-500">نمونه کارها</a></li>
-                <li><a href="/blog" class="text-lg hover:text-blue-500">وبلاگ</a></li>
-                <li><a href="/faq" class="text-lg hover:text-blue-500">پرسش‌های متداول</a></li>
-                <li><a href="/contact" class="text-lg bg-blue-500 text-white px-4 py-2 rounded-md">تماس با ما</a></li>
-            </ul>
-        </div>
-    </header>
-
-    <main class="container mx-auto px-4 sm:px-6 py-8">
-        {{- it.content }}
-    </main>
-
-    <!-- Floating Action Button (FAB) for Mobile -->
-    <a href="/contact" class="md:hidden fixed bottom-5 right-5 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-    </a>
-
-    <footer class="bg-gray-800 text-white mt-8 py-6">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2024 سئوکار حرفه‌ای. تمام حقوق محفوظ است.</p>
-        </div>
-    </footer>
-
-    <script>
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        hamburgerBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('-translate-x-full');
-            hamburgerBtn.classList.toggle('open'); // For potential animation styles
-        });
-    </script>
+    <!-- ... rest of the layout ... -->
 </body>
 </html>

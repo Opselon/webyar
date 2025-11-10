@@ -1,25 +1,21 @@
-// src/routes/dashboard/analytics.mjs
+// src/routes/dashboard/ai-insights.mjs
 import { streamHtml } from '../../utils/response.mjs';
 import { generateSeoMeta } from '../../utils/seo.mjs';
 import { Eta } from 'eta';
 
 import dashboardLayoutTemplate from '../../templates/dashboard/layout.html';
 import sidebarTemplate from '../../templates/dashboard/sidebar.html';
-import analyticsTemplate from '../../templates/dashboard/analytics.html'; // Main content
+import insightsTemplate from '../../templates/dashboard/insights.html'; // Will be created
 
 const eta = new Eta();
 
-export async function handleDashboardAnalytics(request, env, ctx) {
+export async function handleDashboardInsights(request, env, ctx) {
     const user = request.user;
-
-    const seoData = generateSeoMeta({
-        title: 'تحلیل‌گر سئو',
-        noIndex: true,
-    });
+    const seoData = generateSeoMeta({ title: 'هوش سئو', noIndex: true });
 
     const sidebarHtml = eta.renderString(sidebarTemplate, { user });
     let finalLayout = dashboardLayoutTemplate.replace('{{! it.sidebar }}', sidebarHtml);
-    finalLayout = finalLayout.replace('{{- it.contentTemplate }}', analyticsTemplate);
+    finalLayout = finalLayout.replace('{{- it.contentTemplate }}', insightsTemplate);
 
     const stream = new ReadableStream({
         start(controller) {

@@ -1,68 +1,54 @@
 // src/utils/cache.mjs
 
 /**
- * Caches a response in KV storage and sets appropriate browser/CDN cache headers.
- * It first tries to retrieve a response from KV. If not found, it generates a new
- * response using the provided handler, caches it in KV, and returns it.
+ * A middleware-like function that implements a cache-then-network strategy
+ * using the standard Cache API, compatible with streaming.
+ * It sets Cache-Control headers to enable stale-while-revalidate.
  *
- * @param {Request} request - The incoming request, used as the cache key.
- * @param {object} env - The worker environment containing the CACHE_KV binding.
- * @param {object} ctx - The execution context, used for async operations.
- * @param {function(): Promise<Response>} handler - An async function that generates the response to be cached.
+ * @param {Request} request - The incoming request.
+ * @param {ExecutionContext} ctx - The execution context for waitUntil.
+ * @param {function(): Promise<Response>} handler - The async function that generates a fresh response.
  * @param {object} options - Caching options.
- * @param {number} options.kvCacheTtl - TTL for the KV cache in seconds.
- * @param {number} options.browserCacheTtl - TTL for the browser cache (`max-age`).
- * @param {number} [options.staleWhileRevalidate] - TTL for `stale-while-revalidate`.
+ * @param {number} options.browserCacheTtl - TTL for browser/CDN cache (`max-age`).
+ * @param {number} options.staleWhileRevalidate - Time window for serving stale content while revalidating.
  * @returns {Promise<Response>}
  */
-export async function cacheAndServe(request, env, ctx, handler, { kvCacheTtl, browserCacheTtl, staleWhileRevalidate }) {
-  // Use the URL as the cache key
-  const cacheKey = request.url;
+export async function serveWithCache(request, ctx, handler, { browserCacheTtl, staleWhileRevalidate }) {
+    const cache = caches.default;
+    const cacheKey = new Request(request.url, request);
 
-  // Try to get the cached response from KV
-  const cachedResponse = await env.CACHE_KV.get(cacheKey, 'text');
+    // Try to find the response in the cache
+    let response = await cache.match(cacheKey);
 
-  if (cachedResponse) {
-    // If found, create a response from the cached text
-    const response = new Response(cachedResponse, {
-      headers: {
-        'Content-Type': 'text/html;charset=UTF-8',
-        'X-Cache-Status': 'HIT' // Custom header to indicate a KV cache hit
-      },
-    });
-    // Set cache headers on the response
-    setCacheHeaders(response, browserCacheTtl, staleWhileRevalidate);
+    if (response) {
+        // If found, return it but kick off a revalidation in the background
+        // The headers on the cached response should already be correct.
+        ctx.waitUntil(revalidateCache(cache, cacheKey, handler));
+
+        // Add a debug header
+        const newHeaders = new Headers(response.headers);
+        newHeaders.set('X-Cache-Status', 'HIT');
+        return new Response(response.body, { ...response, headers: newHeaders });
+    }
+
+    // If not in cache, generate a fresh response
+    response = await handler();
+
+    // Set the caching headers
+    response.headers.set('Cache-Control', `public, max-age=${browserCacheTtl}, stale-while-revalidate=${staleWhileRevalidate}`);
+
+    // Asynchronously cache the new response
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+    response.headers.set('X-Cache-Status', 'MISS');
     return response;
-  }
-
-  // If not found in cache, generate a new response
-  const newResponse = await handler();
-
-  // Only cache successful responses
-  if (newResponse.status === 200) {
-    // Asynchronously store the new response in KV
-    // We use waitUntil to avoid blocking the response to the user
-    const body = await newResponse.clone().text();
-    ctx.waitUntil(env.CACHE_KV.put(cacheKey, body, { expirationTtl: kvCacheTtl }));
-
-    // Set cache headers on the new response
-    setCacheHeaders(newResponse, browserCacheTtl, staleWhileRevalidate);
-    newResponse.headers.set('X-Cache-Status', 'MISS');
-  }
-
-  return newResponse;
 }
 
 /**
- * Sets Cache-Control headers on a Response object.
- * @param {Response} response - The response object to modify.
- * @param {number} maxAge - The `max-age` value in seconds.
- * @param {number} [staleWhileRevalidate] - The `stale-while-revalidate` value.
+ * Fetches a fresh response and updates the cache.
  */
-function setCacheHeaders(response, maxAge, staleWhileRevalidate) {
-  let cacheControl = `public, max-age=${maxAge}`;
-  if (staleWhileRevalidate) {
-    cacheControl += `, stale-while-revalidate=${staleWhileRevalidate}`;
-  }
-  response.headers.set('Cache-Control', cacheControl);
+async function revalidateCache(cache, cacheKey, handler) {
+    const freshResponse = await handler();
+    freshResponse.headers.set('Cache-Control', freshResponse.headers.get('Cache-Control') || 'public, max-age=60, stale-while-revalidate=300'); // Ensure headers are set
+    await cache.put(cacheKey, freshResponse);
 }
