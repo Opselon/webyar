@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "wrangler dev",
-    "deploy": "wrangler publish"
+    "deploy": "wrangler publish",
+    "test": "bash tests/full-system-test.sh"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"

@@ -1,10 +1,9 @@
-// src/api/db-status.mjs
-import { json } from '../utils/response.mjs';
-import { queryDbFirst } from '../utils/db.mjs';
+// src/api/dashboard/db-status.mjs
+import { json } from '../../utils/response.mjs';
+import { queryDbFirst } from '../../utils/db.mjs';
 
 export const getDbStatus = async (request, env) => {
   try {
-    // A simple, fast, read-only query to check if the DB is responsive.
     const result = await queryDbFirst(env.DB, "SELECT 1 as status;");
 
     if (result && result.status === 1) {
@@ -14,6 +13,6 @@ export const getDbStatus = async (request, env) => {
     }
   } catch (e) {
     console.error("DB status check failed:", e);
-    return json({ status: 'error', message: 'Failed to connect to the database.', error: e.message }, 503); // 503 Service Unavailable
+    return json({ status: 'error', message: 'Failed to connect to the database.', error: e.message }, 503);
   }
 };
