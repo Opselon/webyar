@@ -1,34 +1,21 @@
 // src/routes/index.mjs
-import { renderPage } from '../utils/renderer.mjs';
-import { html } from '../utils/response.mjs';
-import { cacheAndServe } from '../utils/cache.mjs';
+import { streamRenderedPage } from '../utils/renderer.mjs';
+import { streamHtml } from '../utils/response.mjs';
+// Note: cacheAndServe is not compatible with streaming out-of-the-box, so we disable it for now.
+// A more advanced implementation would stream to KV first, then stream from KV.
 import { generateSeoMeta } from '../utils/seo.mjs';
 import indexTemplate from '../templates/index.html';
 
-async function renderIndexPage(env) {
+export async function handleIndex(request, env, ctx) {
     const seoData = generateSeoMeta({
         title: 'خدمات سئو حرفه‌ای | رتبه یک گوگل شوید',
         description: 'با خدمات تخصصی سئو ما، وب‌سایت خود را به صفحه اول گوگل بیاورید و فروش خود را افزایش دهید.',
         canonical: `${env.BASE_URL}/`,
     });
 
-    const renderedHtml = renderPage(indexTemplate, {
+    const stream = streamRenderedPage(indexTemplate, {
         seo: seoData,
     });
 
-    return html(renderedHtml);
-}
-
-export async function handleIndex(request, env, ctx) {
-  // Define caching strategy
-  const cacheOptions = {
-    kvCacheTtl: 3600, // Cache in KV for 1 hour
-    browserCacheTtl: 300, // Browser caches for 5 minutes
-    staleWhileRevalidate: 600, // Stale for 10 minutes while revalidating
-  };
-
-  // The handler function needs to be wrapped to pass env
-  const handler = () => renderIndexPage(env);
-
-  return cacheAndServe(request, env, ctx, handler, cacheOptions);
+    return streamHtml(stream);
 }

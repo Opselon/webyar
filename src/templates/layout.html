@@ -9,92 +9,83 @@
     <meta name="description" content="{{- it.seo.description }}">
     <link rel="canonical" href="{{- it.seo.canonical }}">
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph & Twitter -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{- it.seo.canonical }}">
-    <meta property="og:title" content="{{- it.seo.title }}">
-    <meta property="og:description" content="{{- it.seo.description }}">
-    <meta property="og:image" content="{{- it.seo.image || 'https://your-domain.com/default-og-image.jpg' }}">
+    <!-- ... other meta tags ... -->
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{- it.seo.canonical }}">
-    <meta property="twitter:title" content="{{- it.seo.title }}">
-    <meta property="twitter:description" content="{{- it.seo.description }}">
-    <meta property="twitter:image" content="{{- it.seo.image || 'https://your-domain.com/default-og-image.jpg' }}">
-
-    <!-- TailwindCSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Custom Styles for Typography and Fonts -->
     <style>
-        /* Use system fonts for instant loading and native feel */
-        body {
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        /* Enhanced readability for blog posts and content-heavy pages */
-        .prose {
-            font-size: 18px;
-            line-height: 1.8;
-            max-width: 65ch; /* Optimal line length for reading */
-        }
-
-        /* Ensure high contrast for accessibility */
-        .prose {
-            color: #333;
-        }
-
-        .prose a {
-            color: #007bff;
-        }
-
-        /* Dark mode support (basic) */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #1a202c;
-                color: #e2e8f0;
-            }
-            .prose {
-                color: #e2e8f0;
-            }
-            .prose a {
-                color: #63b3ed;
-            }
-            header, .bg-white {
-                background-color: #2d3748;
-                border-color: #4a5568;
-            }
-            footer.bg-gray-800 {
-                 background-color: #1a202c;
-            }
-        }
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .prose { font-size: 18px; line-height: 1.8; max-width: 65ch; }
+        /* Add other base styles here */
+        .hamburger-line { transition: all 0.3s; }
+        .mobile-menu { transition: transform 0.3s ease-in-out; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <header class="bg-white shadow-md">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold text-blue-600">سئوکار حرفه‌ای</a>
-            <ul class="flex space-x-4">
-                <li><a href="/" class="text-gray-600 hover:text-blue-500">خانه</a></li>
-                <li><a href="/services" class="text-gray-600 hover:text-blue-500">خدمات</a></li>
-                <li><a href="/pricing" class="text-gray-600 hover:text-blue-500">قیمت‌ها</a></li>
-                <li><a href="/blog" class="text-gray-600 hover:text-blue-500">وبلاگ</a></li>
-                <li><a href="/contact" class="text-gray-600 hover:text-blue-500">تماس با ما</a></li>
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-blue-600">سئوکار V2</a>
+
+            <!-- Desktop Menu -->
+            <ul class="hidden md:flex space-x-6">
+                <li><a href="/" class="hover:text-blue-500">خانه</a></li>
+                <li><a href="/services" class="hover:text-blue-500">خدمات</a></li>
+                <li><a href="/case-studies" class="hover:text-blue-500">نمونه کارها</a></li>
+                <li><a href="/blog" class="hover:text-blue-500">وبلاگ</a></li>
+                <li><a href="/contact" class="hover:text-blue-500">تماس</a></li>
             </ul>
+
+            <!-- Hamburger Button -->
+            <div class="md:hidden">
+                <button id="hamburger-btn" class="space-y-1.5">
+                    <span class="hamburger-line block w-6 h-0.5 bg-gray-700"></span>
+                    <span class="hamburger-line block w-6 h-0.5 bg-gray-700"></span>
+                    <span class="hamburger-line block w-4 h-0.5 bg-gray-700"></span>
+                </button>
+            </div>
         </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden absolute top-full left-0 w-full bg-white shadow-lg transform -translate-x-full">
+             <ul class="flex flex-col items-center space-y-4 py-6">
+                <li><a href="/" class="text-lg hover:text-blue-500">خانه</a></li>
+                <li><a href="/services" class="text-lg hover:text-blue-500">خدمات</a></li>
+                <li><a href="/case-studies" class="text-lg hover:text-blue-500">نمونه کارها</a></li>
+                <li><a href="/blog" class="text-lg hover:text-blue-500">وبلاگ</a></li>
+                <li><a href="/faq" class="text-lg hover:text-blue-500">پرسش‌های متداول</a></li>
+                <li><a href="/contact" class="text-lg bg-blue-500 text-white px-4 py-2 rounded-md">تماس با ما</a></li>
+            </ul>
+        </div>
     </header>
 
-    <main class="container mx-auto px-6 py-8">
+    <main class="container mx-auto px-4 sm:px-6 py-8">
         {{- it.content }}
     </main>
 
+    <!-- Floating Action Button (FAB) for Mobile -->
+    <a href="/contact" class="md:hidden fixed bottom-5 right-5 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+    </a>
+
     <footer class="bg-gray-800 text-white mt-8 py-6">
         <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2023 سئوکار حرفه‌ای. تمام حقوق محفوظ است.</p>
+            <p>&copy; 2024 سئوکار حرفه‌ای. تمام حقوق محفوظ است.</p>
         </div>
     </footer>
 
+    <script>
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        hamburgerBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('-translate-x-full');
+            hamburgerBtn.classList.toggle('open'); // For potential animation styles
+        });
+    </script>
 </body>
 </html>

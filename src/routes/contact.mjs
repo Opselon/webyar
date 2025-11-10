@@ -1,6 +1,6 @@
 // src/routes/contact.mjs
-import { renderPage } from '../utils/renderer.mjs';
-import { html } from '../utils/response.mjs';
+import { streamRenderedPage } from '../utils/renderer.mjs';
+import { streamHtml } from '../utils/response.mjs';
 import contactTemplate from '../templates/contact.html';
 import { generateSeoMeta } from '../utils/seo.mjs';
 
@@ -60,9 +60,9 @@ export async function handleContact(request) {
     canonical: 'https://your-domain.com/contact',
   });
 
-  const renderedHtml = renderPage(contactTemplate, {
+  const stream = streamRenderedPage(contactTemplate, {
     seo: seoData,
   });
 
-  return html(renderedHtml);
+  return streamHtml(stream);
 }
