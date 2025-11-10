@@ -1,0 +1,42 @@
+<!-- src/templates/dashboard/sidebar.html -->
+<div class="flex flex-col h-full">
+    <div class="text-center py-4 mb-4">
+        <a href="/dashboard" class="text-white text-2xl font-bold">پنل مدیریت</a>
+    </div>
+    <nav class="flex-1">
+        <ul class="space-y-2">
+            <li>
+                <a href="/dashboard" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                    <!-- Icon placeholder -->
+                    <span>داشبورد اصلی</span>
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/posts" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                    <!-- Icon placeholder -->
+                    <span>مدیریت پست‌ها</span>
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/settings" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                    <!-- Icon placeholder -->
+                    <span>تنظیمات سایت</span>
+                </a>
+            </li>
+             <li>
+                <a href="/dashboard/analytics" class="flex items-center p-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                    <!-- Icon placeholder -->
+                    <span>آمار و تحلیل</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="mt-auto">
+        <div class="text-center text-sm text-gray-400">
+            <p>کاربر: {{- it.user.username }}</p>
+        </div>
+        <a href="/api/dashboard/logout" class="block w-full text-center p-2 mt-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+            خروج
+        </a>
+    </div>
+</div>

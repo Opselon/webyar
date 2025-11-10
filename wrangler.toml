@@ -1,26 +1,23 @@
-name = "cloudflare-seo-site"
+name = "cloudflare-seo-site-v2"
 main = "src/index.mjs"
 compatibility_date = "2023-11-10"
 
-# Bind a D1 Database.
 [[d1_databases]]
 binding = "DB"
 database_name = "seo_db"
 database_id = "your-d1-database-id-here"
 preview_database_id = "your-preview-d1-database-id-here"
 
-# Bind a KV Namespace for caching.
-# 1. Create with: wrangler kv:namespace create CACHE_KV
-# 2. Add the id and preview_id below.
 [[kv_namespaces]]
 binding = "CACHE_KV"
 id = "your-cache-kv-namespace-id-here"
 preview_id = "your-preview-cache-kv-namespace-id-here"
-
 
 [vars]
 BASE_URL = "https://your-domain.com"
 ADMIN_USER = "admin"
 
 [dev]
-vars = { ADMIN_PASS = "password" }
+# These vars are used by `wrangler dev`
+ADMIN_PASS = "password"
+JWT_SECRET = "a-secure-secret-for-local-development"
