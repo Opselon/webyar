@@ -1,7 +1,7 @@
 
 -- --------------------------------------------------------------------------------
 -- AUTO-GENERATED MULTILINGUAL CONTENT SEED FILE
--- Generated on: 2025-11-11T03:18:08.849Z
+-- Generated on: 2025-11-11T12:32:43.630Z
 -- --------------------------------------------------------------------------------
 
 -- Clear existing content to make this script idempotent
