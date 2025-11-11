@@ -2,8 +2,8 @@
 import { Router, error, withParams } from 'itty-router';
 import { renderPage } from './utils/renderer.mjs';
 import { withAuth, withPageAuth } from './api/dashboard/middleware.mjs';
-import { handleApiRequest } from './api/api-handler.mjs';
-import { serveAsset } from './utils/assets.mjs';
+// import { handleApiRequest } from './api/api-handler.mjs'; // FIXME: File not found
+// import { serveAsset } from './utils/assets.mjs'; // FIXME: File not found
 import { getTranslations } from './utils/i18n.mjs';
 import { generateSeoMeta } from './utils/seo.mjs';
 import { html } from './utils/response.mjs';
@@ -86,8 +86,8 @@ router.get('/', (req) => {
 });
 
 // --- ASSET SERVING, API, and DASHBOARD ROUTES ---
-router.get('/assets/*', serveAsset);
-router.all('/api/*', handleApiRequest);
+// router.get('/assets/*', serveAsset); // FIXME: serveAsset is not imported
+// router.all('/api/*', handleApiRequest); // FIXME: handleApiRequest is not imported
 router.get('/dashboard/login', (req, env, ctx) => renderPage('dashboard/login.html', { page: { title: 'ورود به پنل مدیریت' }, layout: 'dashboard/layout.html', noAuth: true }, env, ctx));
 router.get('/dashboard', withPageAuth, (req, env, ctx) => renderPage('dashboard/index.html', { page: { title: 'داشبورد' }, layout: 'dashboard/layout.html' }, env, ctx));
 router.get('/dashboard/posts', withPageAuth, (req, env, ctx) => renderPage('dashboard/posts.html', { page: { title: 'مدیریت پست‌ها' }, layout: 'dashboard/layout.html' }, env, ctx));
