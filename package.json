@@ -6,14 +6,20 @@
   "scripts": {
     "start": "wrangler dev",
     "deploy": "npm run build && wrangler publish",
-    "test": "bash tests/full-system-test.sh",
+    "test:visual": "playwright test tests/visual",
+    "test:e2e": "playwright test",
+    "test:integration": "bash tests/run-integration.sh",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest run",
     "build:assets": "node src/scripts/generate-assets.mjs --run",
     "build:content": "node src/scripts/generate-content.mjs --seed",
     "build": "npm run build:assets && npm run build:content",
     "db:seed": "npx wrangler d1 execute seo_db --local --file=./db/seed-content.sql"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "@playwright/test": "^1.56.1",
+    "vitest": "^4.0.8",
+    "wrangler": "4.14.4"
   },
   "dependencies": {
     "@tsndr/cloudflare-worker-jwt": "^2.2.1",
