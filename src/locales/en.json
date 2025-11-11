@@ -1,0 +1,23 @@
+{
+  "page_titles": {
+    "home": "Modern SEO Services",
+    "services": "Our Services",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "contact": "Contact Us"
+  },
+  "meta_descriptions": {
+    "home": "Provider of specialized SEO services for online businesses",
+    "services": "Comprehensive SEO services including technical, content, and link building",
+    "pricing": "Pricing plans tailored to your business needs",
+    "blog": "Specialized articles and tutorials on SEO",
+    "contact": "Get in touch with us"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "contact": "Contact"
+  }
+}

@@ -1,22 +1,17 @@
 
 -- --------------------------------------------------------------------------------
--- AUTO-GENERATED CONTENT SEED FILE (PERSIAN)
--- Generated on: 2025-11-10T23:46:40.557Z
+-- AUTO-GENERATED MULTILINGUAL CONTENT SEED FILE
+-- Generated on: 2025-11-11T03:18:08.849Z
 -- --------------------------------------------------------------------------------
 
 -- Clear existing content to make this script idempotent
 DELETE FROM posts;
-DELETE FROM testimonials;
-DELETE FROM case_studies;
+-- Add other tables to clear if needed (e.g., DELETE FROM testimonials;)
 
--- Seed Posts (Persian)
-INSERT INTO posts (title, slug, content, meta_description, schema_markup, created_at) VALUES ('کشف قدرت سئوی فنی: راهنمای جامع', 'راهنمای-جامع-سئوی-فنی', 'سئوی فنی سنگ بنای هر استراتژی آنلاین موفق است. این فرآیند شامل بهینه‌سازی زیرساخت وب‌سایت شما برای کمک به ربات‌های موتور جستجو جهت خزش و ایندکس کردن کارآمدتر سایت است. این مقاله به بررسی عمیق مفاهیم اصلی مانند سرعت سایت، داده‌های ساختاریافته و سازگاری با موبایل می‌پردازد و نکات عملی برای بهبود رتبه شما ارائه می‌دهد.', 'اصول سئوی فنی، از سرعت سایت تا داده‌های ساختاریافته را بیاموزید. نکات عملی برای بهبود قابلیت خزش و ایندکس وب‌سایت خود برای کسب رتبه‌های بالاتر در نتایج جستجو را کشف کنید.', '{"@context":"https://schema.org","@type":"BlogPosting","headline":"کشف قدرت سئوی فنی: راهنمای جامع","author":{"@type":"Organization","name":"خدمات سئوی مدرن"},"datePublished":"2025-11-10T23:46:40.555Z"}', datetime('now'));
-INSERT INTO posts (title, slug, content, meta_description, schema_markup, created_at) VALUES ('محتوا پادشاه است: راهنمای استراتژی محتوای سئو', 'راهنمای-استراتژی-محتوای-سئو', 'در دنیای سئو، محتوا حرف اول را می‌زند. یک استراتژی محتوای خوب نه‌تنها مخاطبان هدف شما را جذب می‌کند، بلکه اعتبار شما را در حوزه‌ی تخصصی‌تان تثبیت می‌کند. این راهنما همه چیز را از تحقیق کلمات کلیدی و خوشه‌بندی موضوعی گرفته تا تولید و ترویج محتوا پوشش می‌دهد و به شما کمک می‌کند تا یک موتور محتوایی برای جذب ترافیک ارگانیک بسازید.', 'راهنمای جامع برای ساخت یک استراتژی محتوای قدرتمند سئو. در مورد تحقیق کلمات کلیدی، خوشه‌های موضوعی و ترویج محتوا برای جذب ترافیک ارگانیک پایدار بیاموزید.', '{"@context":"https://schema.org","@type":"BlogPosting","headline":"محتوا پادشاه است: راهنمای استراتژی محتوای سئو","author":{"@type":"Organization","name":"خدمات سئوی مدرن"},"datePublished":"2025-11-10T23:46:40.556Z"}', datetime('now'));
-
--- Seed Testimonials (Persian)
-INSERT INTO testimonials (customer_name, content) VALUES ('علی کریمی، مدیرعامل شرکت تک‌نوین', 'استراتژی سئوی آن‌ها ترافیک ارگانیک ما را تنها در شش ماه دو برابر کرد. نتایج خود گویای همه چیز هستند. قویاً توصیه می‌شود!');
-INSERT INTO testimonials (customer_name, content) VALUES ('سارا احمدی، بنیان‌گذار فروشگاه آنلاین', 'تحلیل‌های حاصل از بازرسی فنی آن‌ها بسیار ارزشمند بود. سایت ما سریع‌تر شده و رتبه‌های ما هرگز بهتر از این نبوده‌اند.');
-
--- Seed Case Studies (Persian)
-INSERT INTO case_studies (title, content) VALUES ('شرکت تک‌نوین: رشد ارگانیک ۲۰۰٪', 'چگونه با بازنگری کامل سئوی داخلی و فنی شرکت تک‌نوین، به رشد ۲۰۰ درصدی ترافیک ارگانیک و افزایش ۱۵۰ درصدی رتبه کلمات کلیدی در طی شش ماه دست یافتیم.');
-INSERT INTO case_studies (title, content) VALUES ('فروشگاه آنلاین: تسلط بر یک بازار خاص', 'بررسی عمیق استراتژی محتوا و بک‌لینک که به فروشگاه آنلاین کمک کرد تا به نتیجه شماره یک جستجو برای کلمات کلیدی اصلی خود تبدیل شود و منجر به افزایش ۳۰۰ درصدی فروش گردد.');
+-- Seed Posts (Multilingual)
+INSERT INTO posts (lang, slug, title, content, meta_description, created_at) VALUES ('fa', 'technical-seo-guide', 'کشف قدرت سئوی فنی: راهنمای جامع', 'سئوی فنی سنگ بنای هر استراتژی آنلاین موفق است...', 'اصول سئوی فنی، از سرعت سایت تا داده‌های ساختاریافته را بیاموزید...', datetime('now'));
+INSERT INTO posts (lang, slug, title, content, meta_description, created_at) VALUES ('en', 'technical-seo-guide', 'Unlocking the Power of Technical SEO: A Comprehensive Guide', 'Technical SEO is the cornerstone of any successful online strategy...', 'Learn the principles of technical SEO, from site speed to structured data...', datetime('now'));
+INSERT INTO posts (lang, slug, title, content, meta_description, created_at) VALUES ('ar', 'technical-seo-guide', 'إطلاق العنان لقوة تحسين محركات البحث التقني: دليل شامل', 'تحسين محركات البحث التقني هو حجر الزاوية في أي استراتيجية ناجحة عبر الإنترنت...', 'تعلم مبادئ تحسين محركات البحث التقني، من سرعة الموقع إلى البيانات المنظمة...', datetime('now'));
+INSERT INTO posts (lang, slug, title, content, meta_description, created_at) VALUES ('fa', 'content-strategy-guide', 'محتوا پادشاه است: راهنمای استراتژی محتوای سئو', 'در دنیای سئو، محتوا حرف اول را می‌زند...', 'راهنمای جامع برای ساخت یک استراتژی محتوای قدرتمند سئو...', datetime('now'));
+INSERT INTO posts (lang, slug, title, content, meta_description, created_at) VALUES ('en', 'content-strategy-guide', 'Content is King: A Guide to SEO Content Strategy', 'In the world of SEO, content reigns supreme...', 'A comprehensive guide to building a powerful SEO content strategy...', datetime('now'));
+INSERT INTO posts (lang, slug, title, content, meta_description, created_at) VALUES ('ar', 'content-strategy-guide', 'المحتوى هو الملك: دليل لاستراتيجية محتوى تحسين محركات البحث', 'في عالم تحسين محركات البحث، المحتوى هو السيد...', 'دليل شامل لبناء استراتيجية محتوى قوية لتحسين محركات البحث...', datetime('now'));

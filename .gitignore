@@ -4,3 +4,4 @@
 # Wrangler
 .wrangler/
 .mf/
+server.log
